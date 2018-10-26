@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:with="title='Alle Research Support medewerkers'">
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<object th:include="fragments :: common_header" th:remove="tag"></object>
+<title th:text="${title}"></title>
 <script th:inline="javascript" type="text/javascript">
-
-	var rsFunctions = new Array();
-
-	var b = [[${T(amc.mb.rsassociations.enums.WebEnum.Helper).getValueDescriptionMap(T(amc.mb.rsassociations.enums.RSFunction))}]];
-	
 </script>
 </head>
+<div th:replace="fragments.html :: pageheader(${title})"></div>
+<a th:href="@{/help}">Help</a>
+
 	<table>
 		<tr th:each="rsEmployee: ${rsEmployees}" th:object="${rsEmployee}">
 			<td th:text="*{fullName}" />
