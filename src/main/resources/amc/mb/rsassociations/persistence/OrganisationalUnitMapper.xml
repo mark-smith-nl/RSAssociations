@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="amc.mb.rsassociations.persistence.OrganisationalUnitMapper">
+	
+	<insert id="saveDivision">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">SELECT nextval('ou_divisions_id_seq')</selectKey>
+		INSERT INTO ou_divisions(id
+			, name)
+			VALUES (#{id}
+				, #{name})
+	</insert>
+	
+	<insert id="saveDepartment">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">SELECT nextval('ou_departments_id_seq')</selectKey>
+		INSERT INTO ou_departments(id
+			, name
+			, division_id)
+			VALUES (#{id}
+				, #{name}
+				, #{division.id})
+	</insert>
+	
+	<insert id="saveSubDepartment">
+		<selectKey keyProperty="id" resultType="long" order="BEFORE">SELECT nextval('ou_subdepartments_id_seq')</selectKey>
+		INSERT INTO ou_subdepartments(id
+			, name
+			, department_id)
+			VALUES (#{id}
+				, #{name}
+				, #{department.id})
+	</insert>
+	
+	<delete id="deleteAll">
+		TRUNCATE ou_divisions CASCADE;
+	</delete>	
+		
+</mapper>

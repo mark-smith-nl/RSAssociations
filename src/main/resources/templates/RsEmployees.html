@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script th:inline="javascript" type="text/javascript">
+
+	var rsFunctions = new Array();
+
+	var b = [[${T(amc.mb.rsassociations.enums.WebEnum.Helper).getValueDescriptionMap(T(amc.mb.rsassociations.enums.RSFunction))}]];
+	
+</script>
+</head>
+	<table>
+		<tr th:each="rsEmployee: ${rsEmployees}" th:object="${rsEmployee}">
+			<td th:text="*{fullName}" />
+			<td><a th:text="*{phoneNumber}" th:href="|tel:*{phoneNumber}|"></a></td>
+			<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
+			<td><a th:text="*{secondaryEmail}" th:href="|mailto:*{secondaryEmail}|"></a></td>
+			<td style="width:40px;" th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}" 
+			th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : '-'}" th:title="${rsFunction.description}" />					
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="amc.mb.rsassociations.persistence.RSEmployeeMapper">
+	<resultMap id="rsEmployeeResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
+		<constructor>
+			<idArg column="rs_employee_id" javaType="long"/>
+			<arg column="row_number" javaType="long"/>
+			<arg column="full_name" javaType="String"/>
+		</constructor>
+		<collection property="rsFunctions" ofType="amc.mb.rsassociations.enums.RSFunction">
+			<id column="function_name"/>
+		</collection>	
+	</resultMap>
+	
+	<resultMap id="hrAdministrateurResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
+		<constructor>
+			<idArg column="a_rs_employee_id" javaType="long"/>
+			<arg column="a_full_name" javaType="String"/>
+		</constructor>
+		<result property="phoneNumber" column="a_phone_number"/>
+		<result property="email" column="a_email"/>
+		<result property="secondaryEmail" column="a_secondary_email"/>
+		<collection property="rsFunctions" ofType="amc.mb.rsassociations.enums.RSFunction">
+			<id column="a_function_name"/>
+		</collection>
+	</resultMap>
+	
+	<resultMap id="hrMedewerkerResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
+		<constructor>
+			<idArg column="m_rs_employee_id" javaType="long"/>
+			<arg column="m_full_name" javaType="String"/>
+		</constructor>
+		<result property="fullName" column="m_full_name"/>
+		<result property="phoneNumber" column="m_phone_number"/>
+		<result property="email" column="m_email"/>
+		<result property="secondaryEmail" column="m_secondary_email"/>	
+		<collection property="rsFunctions" ofType="amc.mb.rsassociations.enums.RSFunction">
+			<id column="b_function_name"/>
+		</collection>
+	</resultMap>
+
+ 	<resultMap id="hrAdviseurMedewerkerCoupleMap"  type="amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple">
+		<constructor>
+			<idArg javaType="amc.mb.rsassociations.domain.RSEmployee" resultMap="hrAdministrateurResultMap"/>
+			<idArg javaType="amc.mb.rsassociations.domain.RSEmployee" resultMap="hrMedewerkerResultMap"/>
+		</constructor>
+	</resultMap>
+	
+	<insert id="insertRSEmployee"  >
+		<selectKey keyProperty="rsEmployeeId" resultType="long" order="BEFORE">SELECT nextval('rsemployees_rs_employee_id_seq')</selectKey>
+		INSERT INTO rsemployees(rs_employee_id
+			, row_number
+			, full_name
+			, phone_number
+			, email
+			, secondary_email
+		) VALUES(#{rsEmployeeId}
+			, #{rowNumber}
+			, #{fullName}
+			, #{phoneNumber}
+			, #{email}
+			, #{secondaryEmail});
+	</insert>
+
+	<insert id="insertRSFunctionForEmployee">
+		INSERT INTO ${tableName}(rs_employee_id
+		) VALUES (#{rsEmployeeId});
+	</insert>
+
+	<insert id="insertProjectControllerAdministrateurCouple" parameterType="amc.mb.rsassociations.domain.ProjectControllerAdministrateurCouple" >
+		INSERT INTO project_controller_administrateur_link(row_number
+			, controller_id
+			, administrateur_id)
+		VALUES(#{rowNumber}
+			, #{controller.rsEmployeeId}
+			, #{administrateur.rsEmployeeId})
+	</insert>
+	
+	<insert id="insertHRAdviseurMedewerkerCouple" parameterType="amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple">
+		INSERT INTO hr_adviseur_medewerker_link(row_number
+		, adviseur_id
+		, medewerker_id)
+		VALUES(#{rowNumber}
+		, #{adviseur.rsEmployeeId}
+		, #{medewerker.rsEmployeeId})	
+	</insert>
+	
+	<select id="getAllRSEmployees" resultMap="rsEmployeeResultMap">
+		<if test="withRoles">
+			WITH functionEmployeeLinks AS (${functionEmployeeLinks})
+		</if>
+		SELECT rsemployee.*, 
+		<choose>
+			<when test="withRoles">function_name</when>
+    		<otherwise>null function_name</otherwise>
+		</choose>
+		FROM rsemployees AS rsemployee 
+		<if test="withRoles">
+			JOIN functionEmployeeLinks
+			USING(rs_employee_id)
+		</if>
+		ORDER BY full_name;
+	</select>
+	
+	<select id="getRSEmployeeById" resultMap="rsEmployeeResultMap">
+		WITH functionEmployeeLinks AS (${functionEmployeeLinks})
+		SELECT rsemployee.*, function_name
+		FROM rsemployees AS rsemployee 
+		JOIN functionEmployeeLinks
+		USING(rs_employee_id)
+		WHERE rs_employee_id=#{rsEmployeeId}
+	</select>
+
+	<select id="getRSEmployeeByFullName" resultMap="rsEmployeeResultMap">
+		WITH functionEmployeeLinks AS (${functionEmployeeLinks})
+		SELECT rsemployee.*, function_name
+		FROM rsemployees AS rsemployee 
+		JOIN functionEmployeeLinks
+		USING(rs_employee_id)
+		WHERE full_name=#{fullName}
+	</select>
+
+	<select id="getRSEmployeesWithRole" resultMap="rsEmployeeResultMap">
+		WITH functionEmployeeLinks AS (${functionEmployeeLinks}),
+		employeeIdsWithRoles AS (
+			SELECT DISTINCT rs_employee_id 
+			FROM rsemployees
+			JOIN functionEmployeeLinks USING(rs_employee_id)
+			WHERE function_name = #{rsFunction})
+		SELECT rsemployees.*, function_name from rsemployees
+		JOIN functionEmployeeLinks USING(rs_employee_id)
+		JOIN employeeIdsWithRoles USING(rs_employee_id);
+	</select>
+		
+	<select id="getRSEmployeeIdsAndFullNameWithRole" resultType="Hashmap">
+    	SELECT rs_employee_id AS "rsEmployeeId"
+    	, full_name AS "fullName"
+    	FROM rsemployees
+    	JOIN ${functionTable} USING(rs_employee_id)
+    	ORDER BY "fullName";
+	</select> 
+
+	<select id="getHRAdviseurMedewerkerCouples" resultMap="hrAdviseurMedewerkerCoupleMap">
+		SELECT a.rs_employee_id a_rs_employee_id
+			, a.full_name       a_full_name
+			, a.phone_number    a_phone_number
+			, a.email           a_email
+			, a.secondary_email a_secondary_email
+			, 'HR_ADVISEUR'     a_function_name   
+			, m.rs_employee_id  m_rs_employee_id
+			, m.full_name       m_full_name
+			, m.phone_number    m_phone_number
+			, m.email           m_email
+			, m.secondary_email m_secondary_email
+			, 'HR_MEDEWERKER'   m_function_name
+		FROM hr_adviseur_medewerker_link aml 
+		JOIN rsemployees a on aml.adviseur_id = a.rs_employee_id 
+		JOIN rsemployees m on aml.medewerker_id = m.rs_employee_id
+		ORDER BY a_full_name;
+	</select>
+
+	<delete id="deleteAll">
+		TRUNCATE rsemployees CASCADE;
+	</delete>
+
+
+	<resultMap type="amc.mb.rsassociations.domain.test.Mariage" id="mariageResultMap">
+		<constructor>
+			<idArg javaType="amc.mb.rsassociations.domain.test.Person" resultMap="husbandResultMap"/>
+			<idArg javaType="amc.mb.rsassociations.domain.test.Person" resultMap="wifeResultMap"/></constructor>
+	</resultMap>
+	
+	<resultMap type="amc.mb.rsassociations.domain.test.Person" id="husbandResultMap">
+		<constructor>
+			<idArg column="h_person_id" javaType="long"/>
+			<arg column="h_last_name" javaType="string"/>
+			<arg column="h_first_name" javaType="string"/>
+		</constructor>
+		<collection property="belongings"  ofType="string" >
+		<result column="h_belonging"/>
+		</collection>
+	</resultMap>
+	
+	<resultMap type="amc.mb.rsassociations.domain.test.Person" id="wifeResultMap">
+		<constructor>
+			<idArg column="w_person_id" javaType="Long"/>
+			<arg column="w_last_name" javaType="string"/>
+			<arg column="w_first_name" javaType="string"/>
+		</constructor>
+		<collection property="belongings" column="w_belonging" ofType="string" javaType="ArrayList" />
+	</resultMap>
+	
+	<insert id="savePerson">
+		<selectKey keyProperty="personId" resultType="long" order="BEFORE">
+			SELECT nextval('persons_person_id_seq')</selectKey>
+		INSERT INTO persons(person_id, last_name, first_name)
+		VALUES(#{personId}, #{lastName}, #{firstName} );
+		
+		INSERT INTO belongings(person_id, name) values
+		<foreach collection="belongings" item="name" separator=", " close=";"> 
+			(#{personId}, #{name})
+		</foreach>
+	</insert>
+	
+	<insert id="saveMariage" parameterType="amc.mb.rsassociations.domain.test.Mariage"> 
+		INSERT INTO mariages(husband_id
+			, wife_id)
+		VALUES(#{husband.personId}
+			, #{wife.personId});
+	</insert>
+	
+	<select id="getMariages" resultMap="mariageResultMap">
+		SELECT h.person_id h_person_id
+			, h.last_name h_last_name
+			, h.first_name h_first_name
+			, bh.name h_belonging
+			, w.person_id w_person_id
+			, w.last_name w_last_name
+			, w.first_name w_first_name
+			, bw.name w_belonging
+		FROM mariages m 
+		JOIN persons h ON m.husband_id = h.person_id 
+		JOIN persons w ON m.wife_id = w.person_id 
+		JOIN belongings bh ON bh.person_id = h.person_id 
+		JOIN belongings bw ON w.person_id = bw.person_id
+		ORDER BY h_last_name
+			, h_first_name
+			, w_last_name
+			, w_first_name
+			, h_belonging
+			, w_belonging;
+	</select>
+							
+</mapper>
