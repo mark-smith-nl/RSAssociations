@@ -1,24 +1,110 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:with="title='Alle Research Support medewerkers'">
+<html xmlns:th="http://www.thymeleaf.org" th:with="title='Research Support medewerkers'">
 <head>
 <meta charset="UTF-8">
 <object th:include="fragments :: common_header" th:remove="tag"></object>
 <title th:text="${title}"></title>
 <script th:inline="javascript" type="text/javascript">
+	$(document).ready(function() {
+		initDataTable();
+	});
+</script>
+<!-- global functions and variables-->
+<script type="text/javascript" th:inline="javascript">
+	var oTable;
+	
+	var columns = new Array();
+
+	var columns = [
+        { name: 'name' },
+        { name: 'phone' },
+        { name: 'email' },
+        { name: 'emailExtra' }
+    ];
+	
+	[[${T(amc.mb.rsassociations.enums.RSFunction).values()}]].forEach(function(rsFunction) {columns.push({name: rsFunction})});
+	
+	function initDataTable() {
+		rsEmployees = $('#rsEmployees').DataTable({
+			pagingType: "full_numbers",
+	    	stateSave: true,
+	    	searching: true,
+	    	lengthChange: false,
+	    	pageLength: 12,
+	        processing: true,
+	        language: { 
+	        	search:         "Doorzoek alle kolommen:",
+	        	info:           "Toon _START_ tot _END_ van _TOTAL_ (gefilterde) RS medewerkers (Pag. _PAGE_ van _PAGES_)",
+	        	infoEmpty:      "Geen RS medewerkers",
+	        	emptyTable:     "Geen RS medewerkers",
+	        	zeroRecords:    "Geen RS medewerkers",
+	        	infoFiltered:   " - Totaal aantal RS medewerkers: _MAX_",
+	        	paginate: {first: "Eerste", last: "Laatste", next: "Volgende", previous: "Vorige"}
+	        },  
+		    order: [0, "asc"],
+		    columns: columns
+	    });
+	}
+	
+	function resetOrderingTable() {
+		rsEmployees.state.clear();
+		rsEmployees.destroy();
+		initDataTable();
+		$("#rsFunction").val("");
+	}
+	
+	function filterByRsFunction(source) {
+		var columnName = $(source).val();
+		
+		rsEmployees.columns().search("").draw();
+		if (columnName != "") {
+			rsEmployees.column(columnName + ':name' ).search('+').draw();
+		}
+	}
 </script>
 </head>
 <div th:replace="fragments.html :: pageheader(${title})"></div>
-<a th:href="@{/help}">Help</a>
+<div class="container-fluid" id="top">
+	<br> <br> <br>
+	<div class="row">
+		<div class="col-sm-2" id="navigationLinks">
+			<div th:include="fragments :: menu" class="sticky-top"></div>
+		</div>
+		<div class="col-sm-10">
+			<div class="row">
+				<div class="col-sm-8">
+					<button onclick="resetOrderingTable()">Reset ordering - filtering</button>
+				</div>
+				<div class="col-sm-4">
+					<select class="form-control" id="rsFunction" name="rsFunction" onChange='filterByRsFunction(this)'>
+						<option selected="selected" value="">-- Functie --</option>
+						<option th:each="rsFunction : ${T(amc.mb.rsassociations.enums.RSFunction).values()}" th:value="${rsFunction.name()}" th:text="${rsFunction.description}"></option>
+					</select>
+				</div>
+			</div>
+			<table class="table table-striped overview" id="rsEmployees">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Telefoon</th>
+						<th>Email</th>
+						<th>Email (extra)</th>
+						<th th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"></th>
+					</tr>
+				</thead>
+				<tr th:each="rsEmployee: ${rsEmployees}" th:object="${rsEmployee}">
+					<td th:text="*{fullName}" />
+					<td><a th:text="*{phoneNumber}" th:href="|tel:*{phoneNumber}|"></a></td>
+					<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
+					<td><a th:text="*{secondaryEmail}" th:href="|mailto:*{secondaryEmail}|"></a></td>
+					<td style="width: 10px;" th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"
+						th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : '-'}" th:title="${rsFunction.description}" />
+				</tr>
+			</table>
 
-	<table>
-		<tr th:each="rsEmployee: ${rsEmployees}" th:object="${rsEmployee}">
-			<td th:text="*{fullName}" />
-			<td><a th:text="*{phoneNumber}" th:href="|tel:*{phoneNumber}|"></a></td>
-			<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
-			<td><a th:text="*{secondaryEmail}" th:href="|mailto:*{secondaryEmail}|"></a></td>
-			<td style="width:40px;" th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}" 
-			th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : '-'}" th:title="${rsFunction.description}" />					
-		</tr>
-	</table>
+		</div>
+	</div>
+
+</div>
 </body>
 </html>

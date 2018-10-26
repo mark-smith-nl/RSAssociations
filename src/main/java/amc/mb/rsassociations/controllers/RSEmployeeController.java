@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import amc.mb.rsassociations.services.ImportSpreadSheetService;
 import amc.mb.rsassociations.services.RSEmployeeService;
@@ -25,10 +26,11 @@ public class RSEmployeeController {
 		this.importSpreadSheetService = importSpreadSheetService;
 	}
 
-	@GetMapping({ "", "/all" })
-	public String getRsEmployeeView(ModelMap map) {
+	@GetMapping
+	public String getRsEmployees(@RequestParam String menuItem, ModelMap map) {
 		map.addAttribute("rsEmployees", rsEmployeeService.getAllRSEmployees(true));
-
+		map.addAttribute("menuItem", menuItem);
+		System.out.println(menuItem);
 		return "RsEmployees";
 	}
 }

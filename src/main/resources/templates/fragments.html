@@ -3,20 +3,14 @@
 <head th:fragment="common_header">
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-<script th:src="@{/webjars/jquery-ui/jquery-ui.min.js}"></script>
-<script th:src="@{/webjars/popper.js/dist/umd/popper.min.js}"></script>
+
+<script th:src="@{/webjars/jquery/jquery.js}"></script>
+
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-<script type="text/javascript" charset="utf-8" th:src="@{/webjars/datatables/media/js/jquery.dataTables.min.js}"></script>
-<script type="text/javascript" charset="utf-8" th:src="@{/webjars/yadcf/jquery.dataTables.yadcf.js}"></script>
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/jquery-ui/jquery-ui.min.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/yadcf/jquery.dataTables.yadcf.css}" />
-<script th:src="@{/webjars/jquery-file-upload/js/jquery.fileupload.js}"></script>
-<script th:src="@{/webjars/jquery-file-upload/js/jquery.iframe-transport.js}"></script>
-<script th:src="@{/webjars/jquery-file-upload/js/jquery.fileupload-process.js}"></script>
 <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/datatables/media/css/jquery.dataTables.min.css}" />
-<link href="/resources/css/mbgx.css" rel="stylesheet" />
+
+<script th:src="@{/webjars/datatables/js/jquery.dataTables.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/datatables/css/jquery.dataTables.min.css}" />
 
 <style type="text/css">
 .dev-header .environment::before {
@@ -50,10 +44,10 @@
 	<nav th:fragment="pageheader(title)" th:class="'navbar fixed-top navbar-expand-lg ' + ${T(java.lang.System).getenv('SPRING_PROFILES_ACTIVE') + '-header'}">
 		<a class="navbar-brand environment" href="/" style="color: rgb(170, 39, 59);">RSAssociations</a>
 		<div class="mx-auto" style="width: 84px">
-			<a href="http://intranet.amc.nl"> <img width="84" height="60" alt="Logo" title="Home" src="http://intranet.amc.nl/upload/8edcc969-2b2e-4071-9858-8abcd5d5b174_logo.png"></img></a>
+			<a href="http://intranet.amc.nl"> <img width="84" height="60" alt="Logo" title="Home" th:src='@{/resources/static/images/AUMCLogo.png}'></img></a>
 		</div>
 		<div class="navbar-text">
-			<h2 th:text="${title}" style="padding-right: 40px;">title</h2>
+			<div th:text="${title}" style="padding-right: 40px;">title</div>
 		</div>
 		<div class="navbar-text" th:with="ingelogdAls=${#authorization == null ? null : #authorization.expression('isAuthenticated()') ? #authentication.principal.username : null}">
 			<a href="http://intranet.amc.nl/web/organisatie/domeinen/research.htm" target="_blank">Research Office</a> / <a
@@ -61,5 +55,12 @@
 				th:if="${ingelogdAls != null && ingelogdAls != 'anonymoususer'}" th:text="${'Ingelogd als ' + ingelogdAls}">Ingelogd</span>
 		</div>
 	</nav>
+
+	<div th:fragment="menu" class="sticky-top">
+		<ul>
+			<li id="help"><a th:href="@{/help}">Help</a></li>
+			<li id="rsEmployeess"><a th:href="@{/rsEmployees?menuItem=allRsEmployees}">RS medewerkers</a></li>
+		</ul>
+	</div>
 </body>
 </html>
