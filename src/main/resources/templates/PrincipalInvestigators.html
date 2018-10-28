@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="title='Principal Investigators'">
+<head>
+<meta charset="UTF-8">
+<object th:include="fragments :: common_header" th:remove="tag"></object>
+<title th:text="${title}"></title>
+<script th:inline="javascript" type="text/javascript">
+	$(document).ready(function() {
+		initDataTable();
+	});
+</script>
+<!-- global functions and variables-->
+<script type="text/javascript" th:inline="javascript">
+	var oTable;
+		
+	function initDataTable() {
+		rsEmployees = $('#principalInvestigators').DataTable({
+			pagingType: "full_numbers",
+	    	stateSave: true,
+	    	searching: true,
+	    	lengthChange: false,
+	    	pageLength: 12,
+	        processing: true,
+	        language: { 
+	        	search:         "Doorzoek alle kolommen:",
+	        	info:           "Toon _START_ tot _END_ van _TOTAL_ (gefilterde) " + [[${title}]] + " (Pag. _PAGE_ van _PAGES_)",
+	        	infoEmpty:      "Geen " + [[${title}]],
+	        	emptyTable:     "Geen " + [[${title}]],
+	        	zeroRecords:    "Geen " + [[${title}]],
+	        	infoFiltered:   " - Totaal aantal [${title}]: _MAX_",
+	        	paginate: {first: "Eerste", last: "Laatste", next: "Volgende", previous: "Vorige"}	        },  
+		    order: [2, "asc"]
+	    });
+	}
+	
+	function resetOrderingTable() {
+		rsEmployees.state.clear();
+		rsEmployees.destroy();
+		initDataTable();
+		$("#rsFunction").val("");
+	}
+	
+</script>
+<style type="text/css">
+table.dataTable thead, table.dataTable tfoot {
+	vertical-align: top;
+}
+
+table.dataTable tbody tr td span {
+	/* om ellipsis te gebruiken bij langere velden. Dan ook span element en "filter_type: 'html'" */
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap; //
+	width: 220px; /* width in span zetten zodat het variabel is */
+}
+</style>
+</head>
+<div th:replace="fragments.html :: pageheader(${title})"></div>
+<div class="container-fluid" id="top">
+	<br> <br> <br>
+	<div class="row">
+		<div class="col-sm-2" id="navigationLinks">
+			<div th:include="fragments :: menu" class="sticky-top"></div>
+		</div>
+		<div class="col-sm-10">
+			<div class="row">
+				<div class="col-sm-8">
+					<button onclick="resetOrderingTable()">Reset ordering - filtering</button>
+				</div>
+			</div>
+			<table class="table table-striped overview" id="principalInvestigators">
+				<thead>
+					<tr>
+						<th>Titel</th>
+						<th>Voorletters</th>
+						<th>Achternaam</th>
+						<th></th>
+						<th>Kamernr.</th>
+						<th>EMail</th>
+						<th>Functie</th>
+						<th>Telefoon</th>
+						<th>Postadres</th>
+					</tr>
+				</thead>
+				<tr th:each="principalInvestigator: ${principalInvestigators}" th:object="${principalInvestigator}" th:title="|Spreadsheetrow: *{rowNumber}|">
+					<td th:text="*{title}" />
+					<td th:text="*{initials}" />
+					<td th:text="*{lastName}" />
+					<td th:text="*{gender}" />
+					<td th:text="*{roomNumber}" />
+					<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
+					<td th:text="*{function}" />
+					<td><a th:text="*{phoneNumber}" th:href="|tel:*{phoneNumber}|"></a></td>
+					<td th:text="*{address}" />
+					</tr>
+			</table>
+
+		</div>
+	</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper	namespace="amc.mb.rsassociations.persistence.PrincipalInvestigatorMapper">
+	<resultMap id="principalInvestigatorResultMap" type="amc.mb.rsassociations.domain.PrincipalInvestigator">
+		<constructor>
+			<idArg column="principal_investigator_id" javaType="long"/>
+			<arg column="row_number" javaType="long"/>
+			<arg column="initials" javaType="String"/>
+			<arg column="last_name" javaType="String"/>
+		</constructor>	
+	</resultMap>
+	
+	<insert id="insertPrincipalInvestigator"  >
+		<selectKey keyProperty="principalInvestigatorId" resultType="long" order="BEFORE">SELECT nextval('principalinvestigators_principal_investigator_id_seq')</selectKey>
+		INSERT INTO principalinvestigators(principal_investigator_id
+			, row_number
+		    , title
+		    , initials
+		    , first_name
+			, middle_name
+			, last_name
+			, gender
+			, room_number
+			, email
+			, function
+			, phone_number
+			, address
+		) VALUES(#{principalInvestigatorId}
+			, #{rowNumber}
+			, #{title}
+			, #{initials}
+			, #{firstName}
+			, #{middleName}
+			, #{lastName}
+			, #{gender}
+			, #{roomNumber}
+			, #{email}
+			, #{function}
+			, #{phoneNumber}
+			, #{address});
+	</insert>
+
+	<select id="getAllPrincipalInvestigators" resultMap="principalInvestigatorResultMap">
+		SELECT *
+		FROM principalinvestigators 
+		
+		ORDER BY last_name, initials;
+	</select>
+	
+	<delete id="deleteAll">
+		TRUNCATE principalinvestigators CASCADE;
+	</delete>
+						
+</mapper>

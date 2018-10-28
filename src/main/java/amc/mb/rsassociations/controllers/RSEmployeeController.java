@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import amc.mb.rsassociations.services.ImportSpreadSheetService;
 import amc.mb.rsassociations.services.RSEmployeeService;
 
 @Controller
@@ -20,18 +19,15 @@ public class RSEmployeeController {
 
 	private final RSEmployeeService rsEmployeeService;
 
-	private final ImportSpreadSheetService importSpreadSheetService;
-
-	public RSEmployeeController(RSEmployeeService rsEmployeeService, ImportSpreadSheetService importSpreadSheetService) {
+	public RSEmployeeController(RSEmployeeService rsEmployeeService) {
 		this.rsEmployeeService = rsEmployeeService;
-		this.importSpreadSheetService = importSpreadSheetService;
 	}
 
 	@GetMapping
 	public String getRsEmployees(@RequestParam(required = false, value = "undefined") String menuItem, ModelMap map) {
 		map.addAttribute("rsEmployees", rsEmployeeService.getAllRSEmployees(true));
 		map.addAttribute("menuItem", menuItem);
-		System.out.println(menuItem);
+
 		return "RsEmployees";
 	}
 

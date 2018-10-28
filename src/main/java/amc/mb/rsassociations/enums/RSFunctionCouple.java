@@ -3,13 +3,13 @@ package amc.mb.rsassociations.enums;
 public enum RSFunctionCouple implements WebEnum {
 
 	PROJECTCONTROLLER_ADMINISTRATEUR_COUPLE(
-			"project_controller_administrateur_link",
+			"project_controller_administrator_link",
 			"Projectcontroller - administrateur",
 			"controller_id",
-			"administrateur_id",
+			"administrator",
 			RSFunction.PROJECTCONTROLLER,
 			RSFunction.PROJECTADMINISTRATEUR),
-	HRADVISEUR_MEDEWERKER_COUPLE("hr_adviseur_medewerker_link", "HRadministrateur - medewerker", "adviseur_id", "medewerker_id", RSFunction.HR_ADVISEUR, RSFunction.HR_MEDEWERKER);
+	HRADVISEUR_MEDEWERKER_COUPLE("hr_advisor_employee_link", "HRadministrateur - medewerker", "advisor_id", "employee_id", RSFunction.HR_ADVISEUR, RSFunction.HR_MEDEWERKER);
 
 	private final String tableName;
 

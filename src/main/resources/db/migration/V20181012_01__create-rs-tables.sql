@@ -28,16 +28,16 @@ CREATE TABLE function_business_developer(rs_employee_id integer NOT NULL REFEREN
 CREATE TABLE function_octrooi_gemachtigde(rs_employee_id integer NOT NULL REFERENCES rsemployees(rs_employee_id) ON DELETE CASCADE UNIQUE) INHERITS(created);
 CREATE TABLE function_consortium_controller(rs_employee_id integer NOT NULL REFERENCES rsemployees(rs_employee_id) ON DELETE CASCADE UNIQUE) INHERITS(created);
 
-CREATE TABLE project_controller_administrateur_link(
+CREATE TABLE project_controller_administrator_link(
 	controller_id integer     NOT NULL REFERENCES function_project_controller(rs_employee_id)   ON DELETE CASCADE
-	, administrateur_id integer NOT NULL REFERENCES function_project_administrateur(rs_employee_id) ON DELETE CASCADE
-	, UNIQUE (controller_id, administrateur_id)
+	, administrator integer NOT NULL REFERENCES function_project_administrateur(rs_employee_id) ON DELETE CASCADE
+	, UNIQUE (controller_id, administrator)
 ) INHERITS(created, rownumber);
 
-CREATE TABLE hr_adviseur_medewerker_link(
-	adviseur_id integer     NOT NULL REFERENCES function_hr_adviseur(rs_employee_id)   ON DELETE CASCADE
-	, medewerker_id integer NOT NULL REFERENCES function_hr_medewerker(rs_employee_id) ON DELETE CASCADE
-	, UNIQUE (adviseur_id, medewerker_id)
+CREATE TABLE hr_advisor_employee_link(
+	advisor_id integer     NOT NULL REFERENCES function_hr_adviseur(rs_employee_id)   ON DELETE CASCADE
+	, employee_id integer NOT NULL REFERENCES function_hr_medewerker(rs_employee_id) ON DELETE CASCADE
+	, UNIQUE (advisor_id, employee_id)
 ) INHERITS(created, rownumber);
 
 

@@ -3,64 +3,45 @@ package amc.mb.rsassociations.domain;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class PrincipalInvestigator {
+public class PrincipalInvestigator extends ExcelRow {
 
 	private Long principalInvestigatorId;
 
-	private final String title;
+	private String title;
 
-	@NotNull
-	@NotEmpty
+	// Molenaar 155 heeft geen initialen
+	// @NotNull
+	// @NotEmpty
 	private final String initials;
 
-	@NotNull
-	@NotEmpty
-	private final String firstName;
+	private String firstName;
 
-	@NotNull
-	@NotEmpty
-	private final String middleName;
+	private String middleName;
 
 	@NotNull
 	@NotEmpty
 	private final String lastName;
 
-	@NotNull
-	@NotEmpty
 	private String gender;
 
-	@NotNull
-	@NotEmpty
 	private String roomNumber;
 
-	@NotNull
-	@NotEmpty
 	private String email;
 
-	@NotNull
-	@NotEmpty
 	private String function;
 
-	@NotNull
-	@NotEmpty
-	private String phone;
+	private String phoneNumber;
 
-	@NotNull
-	@NotEmpty
 	private String address;
 
-	public PrincipalInvestigator(String title, @NotNull @NotEmpty String initials, @NotNull @NotEmpty String firstName, @NotNull @NotEmpty String middleName,
-			@NotNull @NotEmpty String lastName) {
-		this.title = title;
+	public PrincipalInvestigator(@NotNull Long rowNumber, @NotNull @NotEmpty String initials, @NotNull @NotEmpty String lastName) {
+		super(rowNumber);
 		this.initials = initials;
-		this.firstName = firstName;
-		this.middleName = middleName;
 		this.lastName = lastName;
 	}
 
-	public PrincipalInvestigator(Long principalInvestigatorId, String title, @NotNull @NotEmpty String initials, @NotNull @NotEmpty String firstName,
-			@NotNull @NotEmpty String middleName, @NotNull @NotEmpty String lastName) {
-		this(title, initials, firstName, middleName, lastName);
+	public PrincipalInvestigator(Long principalInvestigatorId, Long rowNumber, @NotNull @NotEmpty String initials, @NotNull @NotEmpty String lastName) {
+		this(rowNumber, initials, lastName);
 		this.principalInvestigatorId = principalInvestigatorId;
 	}
 
@@ -76,12 +57,32 @@ public class PrincipalInvestigator {
 		return title;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getInitials() {
 		return initials;
 	}
 
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
 	public String getMiddleName() {
 		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
 
 	public String getGender() {
@@ -116,12 +117,12 @@ public class PrincipalInvestigator {
 		this.function = function;
 	}
 
-	public String getPhone() {
-		return phone;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getAddress() {
@@ -132,19 +133,11 @@ public class PrincipalInvestigator {
 		this.address = address;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
 	@Override
 	public String toString() {
 		return "PrincipalInvestigator [principalInvestigatorId=" + principalInvestigatorId + ", title=" + title + ", initials=" + initials + ", firstName=" + firstName
 				+ ", middleName=" + middleName + ", lastName=" + lastName + ", gender=" + gender + ", roomNumber=" + roomNumber + ", email=" + email + ", function=" + function
-				+ ", phone=" + phone + ", address=" + address + "]";
+				+ ", phoneNumber=" + phoneNumber + ", address=" + address + "]";
 	}
 
 }

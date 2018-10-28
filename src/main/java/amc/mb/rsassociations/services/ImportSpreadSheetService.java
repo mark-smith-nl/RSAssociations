@@ -26,7 +26,6 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import amc.mb.rsassociations.domain.Department;
 import amc.mb.rsassociations.domain.Division;
@@ -40,14 +39,9 @@ import amc.mb.rsassociations.enums.XMLSheet;
 import amc.mb.rsassociations.utils.FinalLambdaValue;
 
 @Service
-@Validated
 public class ImportSpreadSheetService {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(ImportSpreadSheetService.class);
-
-	public static final String SHEET_NAME_OVERVIEW = "Overview";
-
-	// public static final String SHEET_NAME_CONTACT_GEGEVENS = "Contactgegevens RS+ medewerkers";
 
 	private final RSEmployeeService rsEmployeeService;
 
@@ -65,6 +59,7 @@ public class ImportSpreadSheetService {
 	public void importDataFromFile(@NotNull @NotEmpty String fileName) {
 		rsEmployeeService.deleteAll();
 		organisationalUnitService.deleteAll();
+		principalInvestigatorService.deleteAll();
 
 		Workbook workbook;
 		try {
@@ -183,19 +178,21 @@ public class ImportSpreadSheetService {
 		Set<PrincipalInvestigator> principalInvestigators = new LinkedHashSet<>();
 
 		rows.forEach(row -> {
-			PrincipalInvestigator principalInvestigator = new PrincipalInvestigator(row.get("Titel"), row.get("Voorletters"), row.get("Voornaam"), row.get("Tussenvoegsels"),
-					row.get("Achternaam"));
+			// PrincipalInvestigator principalInvestigator = new PrincipalInvestigator(row.get("Titel"), row.get("Voorletters"), row.get("Voornaam"), row.get("Tussenvoegsels"),
+			// row.get("Achternaam"));
+			PrincipalInvestigator principalInvestigator = new PrincipalInvestigator(Long.valueOf(row.get("rowNumber")), row.get("Voorletters"), row.get("Achternaam"));
+			principalInvestigator.setTitle(row.get("Titel"));
+			principalInvestigator.setFirstName(row.get("Voornaam"));
 			principalInvestigator.setGender(row.get("m/v"));
 			principalInvestigator.setRoomNumber(row.get("Kamernr."));
 			principalInvestigator.setEmail(row.get("e-mail"));
 			principalInvestigator.setFunction(row.get("Functie"));
-			principalInvestigator.setPhone(row.get("Telefoon."));
+			principalInvestigator.setPhoneNumber(row.get("Telefoon"));
 			principalInvestigator.setAddress(row.get("Postadres"));
 			principalInvestigators.add(principalInvestigator);
 		});
 
-		principalInvestigators.forEach(System.out::println);
-		// principalInvestigatorService.savePrincipalInvestigators(principalInvestigators);
+		principalInvestigatorService.savePrincipalInvestigators(principalInvestigators);
 
 	}
 

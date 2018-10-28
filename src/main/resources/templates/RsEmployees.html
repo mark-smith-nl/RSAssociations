@@ -34,11 +34,11 @@
 	        processing: true,
 	        language: { 
 	        	search:         "Doorzoek alle kolommen:",
-	        	info:           "Toon _START_ tot _END_ van _TOTAL_ (gefilterde) RS medewerkers (Pag. _PAGE_ van _PAGES_)",
-	        	infoEmpty:      "Geen RS medewerkers",
-	        	emptyTable:     "Geen RS medewerkers",
-	        	zeroRecords:    "Geen RS medewerkers",
-	        	infoFiltered:   " - Totaal aantal RS medewerkers: _MAX_",
+	        	info:           "Toon _START_ tot _END_ van _TOTAL_ (gefilterde) " + [[${title}]] + " (Pag. _PAGE_ van _PAGES_)",
+	        	infoEmpty:      "Geen " + [[${title}]],
+	        	emptyTable:     "Geen " + [[${title}]],
+	        	zeroRecords:    "Geen " + [[${title}]],
+	        	infoFiltered:   " - Totaal aantal [${title}]: _MAX_",
 	        	paginate: {first: "Eerste", last: "Laatste", next: "Volgende", previous: "Vorige"}
 	        },  
 		    order: [0, "asc"],

@@ -28,16 +28,13 @@ public class RSEmployee extends ExcelRow {
 
 	private Set<RSFunction> rsFunctions = new HashSet<>();
 
-	public RSEmployee(String fullName) {
-		super(null);
-		this.fullName = fullName;
-	}
-
-	public RSEmployee(Long rowNumber, String fullName) {
+	/** Constructor used by constructing an instance from a spreadsheet row. */
+	public RSEmployee(@NotNull Long rowNumber, String fullName) {
 		super(rowNumber);
 		this.fullName = fullName;
 	}
 
+	/** Constructor used by constructing an instance from a database record. */
 	public RSEmployee(Long rsEmployeeId, Long rowNumber, String fullName) {
 		this(rowNumber, fullName);
 		this.rsEmployeeId = rsEmployeeId;
