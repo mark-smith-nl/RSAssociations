@@ -59,7 +59,10 @@
 	<div th:fragment="menu" class="sticky-top">
 		<ul>
 			<li id="help"><a th:href="@{/help}">Help</a></li>
-			<li id="rsEmployeess"><a th:href="@{/rsEmployees?menuItem=allRsEmployees}">RS medewerkers</a></li>
+			<li><a id="rsEmployeesLink" th:href="@{/rsEmployees?menuItem=rsEmployeesLink}">RS medewerkers</a></li>
+			<li th:each="rsFunctionCouple : ${T(amc.mb.rsassociations.enums.RSFunctionCouple).values()}" th:object="${rsFunctionCouple}">
+				<a th:href="@{/rsEmployees/rsFunctionCouple/{rsFunctionCouple}?menuItem=23(rsFunctionCouple=${rsFunctionCouple})}" th:text="*{description}">RSFunctionCouple</a>
+			</li>
 		</ul>
 	</div>
 </body>

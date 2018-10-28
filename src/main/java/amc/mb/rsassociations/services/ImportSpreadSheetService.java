@@ -30,12 +30,12 @@ import org.springframework.validation.annotation.Validated;
 
 import amc.mb.rsassociations.domain.Department;
 import amc.mb.rsassociations.domain.Division;
-import amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple;
 import amc.mb.rsassociations.domain.PrincipalInvestigator;
-import amc.mb.rsassociations.domain.ProjectControllerAdministrateurCouple;
 import amc.mb.rsassociations.domain.RSEmployee;
+import amc.mb.rsassociations.domain.RSEmployeeCouple;
 import amc.mb.rsassociations.domain.SubDepartment;
 import amc.mb.rsassociations.enums.RSFunction;
+import amc.mb.rsassociations.enums.RSFunctionCouple;
 import amc.mb.rsassociations.enums.XMLSheet;
 import amc.mb.rsassociations.utils.FinalLambdaValue;
 
@@ -101,27 +101,27 @@ public class ImportSpreadSheetService {
 	private void getAndSaveProjectControllerAdministrateurCouples(Workbook workbook) {
 		List<Map<String, String>> rows = getRowsFromExcelFile(workbook, XMLSheet.MAPPING_PC_PA);
 
-		Set<ProjectControllerAdministrateurCouple> controllerAdministrateurCouples = new LinkedHashSet<>();
+		Set<RSEmployeeCouple> rsFunctionCouples = new LinkedHashSet<>();
 		rows.forEach(row -> {
 			RSEmployee controller = rsEmployeeService.getRSEmployeeByFullName(row.get("PC"));
 			RSEmployee administrateur = rsEmployeeService.getRSEmployeeByFullName(row.get("PA"));
-			controllerAdministrateurCouples.add(new ProjectControllerAdministrateurCouple(Long.valueOf(row.get("rowNumber")), controller, administrateur));
+			rsFunctionCouples.add(new RSEmployeeCouple(Long.valueOf(row.get("rowNumber")), RSFunctionCouple.PROJECTCONTROLLER_ADMINISTRATEUR_COUPLE, controller, administrateur));
 		});
 
-		rsEmployeeService.saveProjectControllerAdministrateurCouples(controllerAdministrateurCouples);
+		rsEmployeeService.saveRSFunctionCouples(rsFunctionCouples);
 	}
 
 	private void getAndSaveHRAdviseurMedewerkerCouples(Workbook workbook) {
 		List<Map<String, String>> rows = getRowsFromExcelFile(workbook, XMLSheet.MAPPING_HRA_HRM);
 
-		Set<HRAdviseurMedewerkerCouple> adviseurMedewerkerCouples = new LinkedHashSet<>();
+		Set<RSEmployeeCouple> rsFunctionCouples = new LinkedHashSet<>();
 		rows.forEach(row -> {
 			RSEmployee adviseur = rsEmployeeService.getRSEmployeeByFullName(row.get("HRA"));
 			RSEmployee medewerker = rsEmployeeService.getRSEmployeeByFullName(row.get("HRM"));
-			adviseurMedewerkerCouples.add(new HRAdviseurMedewerkerCouple(Long.valueOf(row.get("rowNumber")), adviseur, medewerker));
+			rsFunctionCouples.add(new RSEmployeeCouple(Long.valueOf(row.get("rowNumber")), RSFunctionCouple.HRADVISEUR_MEDEWERKER_COUPLE, adviseur, medewerker));
 		});
 
-		rsEmployeeService.saveHRAdviseurMedewerkerCouples(adviseurMedewerkerCouples);
+		rsEmployeeService.saveRSFunctionCouples(rsFunctionCouples);
 	}
 
 	private void getAndSaveOrganisationalUnits(Workbook workbook) {

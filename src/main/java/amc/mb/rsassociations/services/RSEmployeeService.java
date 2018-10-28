@@ -12,11 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple;
-import amc.mb.rsassociations.domain.ProjectControllerAdministrateurCouple;
 import amc.mb.rsassociations.domain.RSEmployee;
-import amc.mb.rsassociations.domain.test.Mariage;
-import amc.mb.rsassociations.domain.test.Person;
+import amc.mb.rsassociations.domain.RSEmployeeCouple;
 import amc.mb.rsassociations.enums.RSFunction;
 import amc.mb.rsassociations.persistence.RSEmployeeMapper;
 
@@ -62,40 +59,21 @@ public class RSEmployeeService {
 		return rsEmployeeMapper.getRSEmployeeIdsAndFullNameWithRole(rsFunction.getTableName());
 	}
 
-	public List<HRAdviseurMedewerkerCouple> getHRAdviseurMedewerkerCouples() {
-		return rsEmployeeMapper.getHRAdviseurMedewerkerCouples();
+	public void saveRSFunctionCouples(@NotNull @Valid Set<RSEmployeeCouple> rsFunctionCouples) {
+		rsFunctionCouples.forEach(this::saveRSFunctionCouple);
 	}
 
-	public void saveProjectControllerAdministrateurCouples(@NotNull @Valid Set<ProjectControllerAdministrateurCouple> controllerAdministrateurCouples) {
-		controllerAdministrateurCouples.forEach(this::saveProjectControllerAdministrateurCouple);
+	public void saveRSFunctionCouple(@NotNull @Valid RSEmployeeCouple rsFunctionCouple) {
+		rsEmployeeMapper.insertRSEmployeeCouple(rsFunctionCouple);
 	}
 
-	public void saveProjectControllerAdministrateurCouple(@NotNull @Valid ProjectControllerAdministrateurCouple controllerAdministrateurCouple) {
-		rsEmployeeMapper.insertProjectControllerAdministrateurCouple(controllerAdministrateurCouple);
-	}
-
-	public void saveHRAdviseurMedewerkerCouples(@NotNull @Valid Set<HRAdviseurMedewerkerCouple> adviseurMedewerkerCouples) {
-		adviseurMedewerkerCouples.forEach(this::saveHRAdviseurMedewerkerCouple);
-	}
-
-	public void saveHRAdviseurMedewerkerCouple(@NotNull @Valid HRAdviseurMedewerkerCouple adviseurMedewerkerCouple) {
-		rsEmployeeMapper.insertHRAdviseurMedewerkerCouple(adviseurMedewerkerCouple);
-	}
+	/*
+	 * public List<RSEmployeeCouple> getRSEmployeeCouples(@NotNull RSFunctionCouple rsFunctionCouple) { return
+	 * rsEmployeeMapper.getRSEmployeeCouples(rsFunctionCouple.getTableName()); }
+	 */
 
 	public void deleteAll() {
 		rsEmployeeMapper.deleteAll();
-	}
-
-	public void savePerson(Person person) {
-		rsEmployeeMapper.savePerson(person);
-	}
-
-	public void saveMariage(Person husband, Person wife) {
-		rsEmployeeMapper.saveMariage(husband, wife);
-	}
-
-	public List<Mariage> getMariages() {
-		return rsEmployeeMapper.getMariages();
 	}
 
 }

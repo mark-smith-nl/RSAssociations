@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,10 +28,18 @@ public class RSEmployeeController {
 	}
 
 	@GetMapping
-	public String getRsEmployees(@RequestParam String menuItem, ModelMap map) {
+	public String getRsEmployees(@RequestParam(required = false, value = "undefined") String menuItem, ModelMap map) {
 		map.addAttribute("rsEmployees", rsEmployeeService.getAllRSEmployees(true));
 		map.addAttribute("menuItem", menuItem);
 		System.out.println(menuItem);
 		return "RsEmployees";
 	}
+
+	@GetMapping("rsFunctionCouple/{rsFunctionCouple}")
+	public String getRsEmployeesForFunctionCouple(@RequestParam String menuItem, @PathVariable String rsFunctionCouple) {
+		System.out.println(rsFunctionCouple);
+
+		return "redirect:/rsEmployees";
+	}
+
 }

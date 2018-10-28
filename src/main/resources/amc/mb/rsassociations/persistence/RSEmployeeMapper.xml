@@ -12,7 +12,7 @@
 		</collection>	
 	</resultMap>
 	
-	<resultMap id="hrAdministrateurResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
+	<!-- <resultMap id="hrAdministrateurResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
 		<constructor>
 			<idArg column="a_rs_employee_id" javaType="long"/>
 			<arg column="a_full_name" javaType="String"/>
@@ -39,12 +39,12 @@
 		</collection>
 	</resultMap>
 
- 	<resultMap id="hrAdviseurMedewerkerCoupleMap"  type="amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple">
+ 	<resultMap id="rsEmployeeCouplesMap"  type="amc.mb.rsassociations.domain.RSEmployeeCouple">
 		<constructor>
 			<idArg javaType="amc.mb.rsassociations.domain.RSEmployee" resultMap="hrAdministrateurResultMap"/>
 			<idArg javaType="amc.mb.rsassociations.domain.RSEmployee" resultMap="hrMedewerkerResultMap"/>
 		</constructor>
-	</resultMap>
+	</resultMap> -->
 	
 	<insert id="insertRSEmployee"  >
 		<selectKey keyProperty="rsEmployeeId" resultType="long" order="BEFORE">SELECT nextval('rsemployees_rs_employee_id_seq')</selectKey>
@@ -67,22 +67,13 @@
 		) VALUES (#{rsEmployeeId});
 	</insert>
 
-	<insert id="insertProjectControllerAdministrateurCouple" parameterType="amc.mb.rsassociations.domain.ProjectControllerAdministrateurCouple" >
-		INSERT INTO project_controller_administrateur_link(row_number
-			, controller_id
-			, administrateur_id)
+	<insert id="insertRSEmployeeCouple" parameterType="amc.mb.rsassociations.domain.RSEmployeeCouple" >
+		INSERT INTO ${rsFunctionCouple.tableName}(row_number
+			, ${rsFunctionCouple.columnNameFirstRSEmployee}
+			, ${rsFunctionCouple.columnNameSecondRSEmployee})
 		VALUES(#{rowNumber}
-			, #{controller.rsEmployeeId}
-			, #{administrateur.rsEmployeeId})
-	</insert>
-	
-	<insert id="insertHRAdviseurMedewerkerCouple" parameterType="amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple">
-		INSERT INTO hr_adviseur_medewerker_link(row_number
-		, adviseur_id
-		, medewerker_id)
-		VALUES(#{rowNumber}
-		, #{adviseur.rsEmployeeId}
-		, #{medewerker.rsEmployeeId})	
+			, #{firstRSEmployee.rsEmployeeId}
+			, #{secondRSEmployee.rsEmployeeId})
 	</insert>
 	
 	<select id="getAllRSEmployees" resultMap="rsEmployeeResultMap">
@@ -140,7 +131,7 @@
     	ORDER BY "fullName";
 	</select> 
 
-	<select id="getHRAdviseurMedewerkerCouples" resultMap="hrAdviseurMedewerkerCoupleMap">
+	<!-- <select id="getRSEmployeeCouples" resultMap="rsEmployeeCouplesMap">
 		SELECT a.rs_employee_id a_rs_employee_id
 			, a.full_name       a_full_name
 			, a.phone_number    a_phone_number
@@ -153,82 +144,14 @@
 			, m.email           m_email
 			, m.secondary_email m_secondary_email
 			, 'HR_MEDEWERKER'   m_function_name
-		FROM hr_adviseur_medewerker_link aml 
+		FROM ${tableName} aml 
 		JOIN rsemployees a on aml.adviseur_id = a.rs_employee_id 
 		JOIN rsemployees m on aml.medewerker_id = m.rs_employee_id
 		ORDER BY a_full_name;
-	</select>
+	</select> -->
 
 	<delete id="deleteAll">
 		TRUNCATE rsemployees CASCADE;
 	</delete>
-
-
-	<resultMap type="amc.mb.rsassociations.domain.test.Mariage" id="mariageResultMap">
-		<constructor>
-			<idArg javaType="amc.mb.rsassociations.domain.test.Person" resultMap="husbandResultMap"/>
-			<idArg javaType="amc.mb.rsassociations.domain.test.Person" resultMap="wifeResultMap"/></constructor>
-	</resultMap>
-	
-	<resultMap type="amc.mb.rsassociations.domain.test.Person" id="husbandResultMap">
-		<constructor>
-			<idArg column="h_person_id" javaType="long"/>
-			<arg column="h_last_name" javaType="string"/>
-			<arg column="h_first_name" javaType="string"/>
-		</constructor>
-		<collection property="belongings"  ofType="string" >
-		<result column="h_belonging"/>
-		</collection>
-	</resultMap>
-	
-	<resultMap type="amc.mb.rsassociations.domain.test.Person" id="wifeResultMap">
-		<constructor>
-			<idArg column="w_person_id" javaType="Long"/>
-			<arg column="w_last_name" javaType="string"/>
-			<arg column="w_first_name" javaType="string"/>
-		</constructor>
-		<collection property="belongings" column="w_belonging" ofType="string" javaType="ArrayList" />
-	</resultMap>
-	
-	<insert id="savePerson">
-		<selectKey keyProperty="personId" resultType="long" order="BEFORE">
-			SELECT nextval('persons_person_id_seq')</selectKey>
-		INSERT INTO persons(person_id, last_name, first_name)
-		VALUES(#{personId}, #{lastName}, #{firstName} );
-		
-		INSERT INTO belongings(person_id, name) values
-		<foreach collection="belongings" item="name" separator=", " close=";"> 
-			(#{personId}, #{name})
-		</foreach>
-	</insert>
-	
-	<insert id="saveMariage" parameterType="amc.mb.rsassociations.domain.test.Mariage"> 
-		INSERT INTO mariages(husband_id
-			, wife_id)
-		VALUES(#{husband.personId}
-			, #{wife.personId});
-	</insert>
-	
-	<select id="getMariages" resultMap="mariageResultMap">
-		SELECT h.person_id h_person_id
-			, h.last_name h_last_name
-			, h.first_name h_first_name
-			, bh.name h_belonging
-			, w.person_id w_person_id
-			, w.last_name w_last_name
-			, w.first_name w_first_name
-			, bw.name w_belonging
-		FROM mariages m 
-		JOIN persons h ON m.husband_id = h.person_id 
-		JOIN persons w ON m.wife_id = w.person_id 
-		JOIN belongings bh ON bh.person_id = h.person_id 
-		JOIN belongings bw ON w.person_id = bw.person_id
-		ORDER BY h_last_name
-			, h_first_name
-			, w_last_name
-			, w_first_name
-			, h_belonging
-			, w_belonging;
-	</select>
-							
+						
 </mapper>

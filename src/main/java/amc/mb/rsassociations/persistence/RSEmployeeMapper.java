@@ -9,11 +9,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.ibatis.annotations.Param;
 
-import amc.mb.rsassociations.domain.HRAdviseurMedewerkerCouple;
-import amc.mb.rsassociations.domain.ProjectControllerAdministrateurCouple;
 import amc.mb.rsassociations.domain.RSEmployee;
-import amc.mb.rsassociations.domain.test.Mariage;
-import amc.mb.rsassociations.domain.test.Person;
+import amc.mb.rsassociations.domain.RSEmployeeCouple;
 import amc.mb.rsassociations.enums.RSFunction;
 
 public interface RSEmployeeMapper {
@@ -22,9 +19,7 @@ public interface RSEmployeeMapper {
 
 	void insertRSFunctionForEmployee(String tableName, Long rsEmployeeId);
 
-	void insertProjectControllerAdministrateurCouple(@NotNull @Valid ProjectControllerAdministrateurCouple projectControllerAdministrateurCouple);
-
-	void insertHRAdviseurMedewerkerCouple(@NotNull @Valid HRAdviseurMedewerkerCouple adviseurMedewerkerCouple);
+	void insertRSEmployeeCouple(@NotNull @Valid RSEmployeeCouple rsFunctionCouple);
 
 	List<RSEmployee> getAllRSEmployees(String functionEmployeeLinks, boolean withRoles);
 
@@ -36,13 +31,8 @@ public interface RSEmployeeMapper {
 
 	List<Map<String, Object>> getRSEmployeeIdsAndFullNameWithRole(@Param("functionTable") String functionTable);
 
-	List<HRAdviseurMedewerkerCouple> getHRAdviseurMedewerkerCouples();
+	/* List<RSEmployeeCouple> getRSEmployeeCouples(String tableName); */
 
 	void deleteAll();
 
-	void savePerson(Person person);
-
-	void saveMariage(Person husband, Person wife);
-
-	List<Mariage> getMariages();
 }
