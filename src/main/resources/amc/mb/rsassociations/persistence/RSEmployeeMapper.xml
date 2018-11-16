@@ -3,68 +3,46 @@
 <mapper	namespace="amc.mb.rsassociations.persistence.RSEmployeeMapper">
 	<resultMap id="rsEmployeeResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
 		<constructor>
-			<idArg column="rs_employee_id" javaType="long"/>
+			<idArg column="persoon_id" javaType="long"/>
 			<arg column="row_number" javaType="long"/>
-			<arg column="full_name" javaType="String"/>
 		</constructor>
 		<collection property="rsFunctions" ofType="amc.mb.rsassociations.enums.RSFunction">
 			<id column="function_name"/>
 		</collection>	
 	</resultMap>
 	
-	<!-- <resultMap id="hrAdministrateurResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
-		<constructor>
-			<idArg column="a_rs_employee_id" javaType="long"/>
-			<arg column="a_full_name" javaType="String"/>
-		</constructor>
-		<result property="phoneNumber" column="a_phone_number"/>
-		<result property="email" column="a_email"/>
-		<result property="secondaryEmail" column="a_secondary_email"/>
-		<collection property="rsFunctions" ofType="amc.mb.rsassociations.enums.RSFunction">
-			<id column="a_function_name"/>
-		</collection>
-	</resultMap>
-	
-	<resultMap id="hrMedewerkerResultMap" type="amc.mb.rsassociations.domain.RSEmployee">
-		<constructor>
-			<idArg column="m_rs_employee_id" javaType="long"/>
-			<arg column="m_full_name" javaType="String"/>
-		</constructor>
-		<result property="fullName" column="m_full_name"/>
-		<result property="phoneNumber" column="m_phone_number"/>
-		<result property="email" column="m_email"/>
-		<result property="secondaryEmail" column="m_secondary_email"/>	
-		<collection property="rsFunctions" ofType="amc.mb.rsassociations.enums.RSFunction">
-			<id column="b_function_name"/>
-		</collection>
-	</resultMap>
-
- 	<resultMap id="rsEmployeeCouplesMap"  type="amc.mb.rsassociations.domain.RSEmployeeCouple">
-		<constructor>
-			<idArg javaType="amc.mb.rsassociations.domain.RSEmployee" resultMap="hrAdministrateurResultMap"/>
-			<idArg javaType="amc.mb.rsassociations.domain.RSEmployee" resultMap="hrMedewerkerResultMap"/>
-		</constructor>
-	</resultMap> -->
-	
 	<insert id="insertRSEmployee"  >
-		<selectKey keyProperty="rsEmployeeId" resultType="long" order="BEFORE">SELECT nextval('rsemployees_rs_employee_id_seq')</selectKey>
-		INSERT INTO rsemployees(rs_employee_id
+		INSERT INTO rsemployees(persoon_id
 			, row_number
-			, full_name
+			, amcgebruikersnaam
+			, amcemail
+			, voorkeurnaam
+			, tussenvoegsel
+			, voorletters
+			, voornaam
+			, roepnaam
+			, geboortedatum
+			, geslacht
 			, phone_number
 			, email
-			, secondary_email
-		) VALUES(#{rsEmployeeId}
+		) VALUES(#{persoonId}
 			, #{rowNumber}
-			, #{fullName}
+			, #{amcgebruikersnaam}
+			, #{amcemail}
+			, #{voorkeurnaam}
+			, #{tussenvoegsel}
+			, #{voorletters}
+			, #{voornaam}
+			, #{roepnaam}
+			, #{geboortedatum}
+			, #{geslacht}
 			, #{phoneNumber}
-			, #{email}
-			, #{secondaryEmail});
+			, #{email});
 	</insert>
 
 	<insert id="insertRSFunctionForEmployee">
-		INSERT INTO ${tableName}(rs_employee_id
-		) VALUES (#{rsEmployeeId});
+		INSERT INTO ${tableName}(persoon_id
+		) VALUES (#{persoonId});
 	</insert>
 
 	<insert id="insertRSEmployeeCouple" parameterType="amc.mb.rsassociations.domain.RSEmployeeCouple" >
@@ -72,8 +50,8 @@
 			, ${rsFunctionCouple.columnNameFirstRSEmployee}
 			, ${rsFunctionCouple.columnNameSecondRSEmployee})
 		VALUES(#{rowNumber}
-			, #{firstRSEmployee.rsEmployeeId}
-			, #{secondRSEmployee.rsEmployeeId})
+			, #{firstRSEmployee.persoonId}
+			, #{secondRSEmployee.persoonId})
 	</insert>
 	
 	<select id="getAllRSEmployees" resultMap="rsEmployeeResultMap">
@@ -88,68 +66,32 @@
 		FROM rsemployees AS rsemployee 
 		<if test="withRoles">
 			JOIN functionEmployeeLinks
-			USING(rs_employee_id)
+			USING(persoon_id)
 		</if>
-		ORDER BY full_name;
+		ORDER BY voorkeurnaam;
 	</select>
 	
-	<select id="getRSEmployeeById" resultMap="rsEmployeeResultMap">
+	<select id="getRSEmployeeByPersoonId" resultMap="rsEmployeeResultMap">
 		WITH functionEmployeeLinks AS (${functionEmployeeLinks})
 		SELECT rsemployee.*, function_name
 		FROM rsemployees AS rsemployee 
 		JOIN functionEmployeeLinks
-		USING(rs_employee_id)
-		WHERE rs_employee_id=#{rsEmployeeId}
-	</select>
-
-	<select id="getRSEmployeeByFullName" resultMap="rsEmployeeResultMap">
-		WITH functionEmployeeLinks AS (${functionEmployeeLinks})
-		SELECT rsemployee.*, function_name
-		FROM rsemployees AS rsemployee 
-		JOIN functionEmployeeLinks
-		USING(rs_employee_id)
-		WHERE full_name=#{fullName}
+		USING(persoon_id)
+		WHERE persoon_id=#{persoonId}
 	</select>
 
 	<select id="getRSEmployeesWithRole" resultMap="rsEmployeeResultMap">
 		WITH functionEmployeeLinks AS (${functionEmployeeLinks}),
 		employeeIdsWithRoles AS (
-			SELECT DISTINCT rs_employee_id 
+			SELECT DISTINCT persoon_id 
 			FROM rsemployees
-			JOIN functionEmployeeLinks USING(rs_employee_id)
+			JOIN functionEmployeeLinks USING(persoon_id)
 			WHERE function_name = #{rsFunction})
 		SELECT rsemployees.*, function_name from rsemployees
-		JOIN functionEmployeeLinks USING(rs_employee_id)
-		JOIN employeeIdsWithRoles USING(rs_employee_id);
+		JOIN functionEmployeeLinks USING(persoon_id)
+		JOIN employeeIdsWithRoles USING(persoon_id);
 	</select>
 		
-	<select id="getRSEmployeeIdsAndFullNameWithRole" resultType="Hashmap">
-    	SELECT rs_employee_id AS "rsEmployeeId"
-    	, full_name AS "fullName"
-    	FROM rsemployees
-    	JOIN ${functionTable} USING(rs_employee_id)
-    	ORDER BY "fullName";
-	</select> 
-
-	<!-- <select id="getRSEmployeeCouples" resultMap="rsEmployeeCouplesMap">
-		SELECT a.rs_employee_id a_rs_employee_id
-			, a.full_name       a_full_name
-			, a.phone_number    a_phone_number
-			, a.email           a_email
-			, a.secondary_email a_secondary_email
-			, 'HR_ADVISEUR'     a_function_name   
-			, m.rs_employee_id  m_rs_employee_id
-			, m.full_name       m_full_name
-			, m.phone_number    m_phone_number
-			, m.email           m_email
-			, m.secondary_email m_secondary_email
-			, 'HR_MEDEWERKER'   m_function_name
-		FROM ${tableName} aml 
-		JOIN rsemployees a on aml.adviseur_id = a.rs_employee_id 
-		JOIN rsemployees m on aml.medewerker_id = m.rs_employee_id
-		ORDER BY a_full_name;
-	</select> -->
-
 	<delete id="deleteAll">
 		TRUNCATE rsemployees CASCADE;
 	</delete>

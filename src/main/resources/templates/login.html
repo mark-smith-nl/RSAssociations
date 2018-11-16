@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="title='Login'">
+<head>
+<meta charset="UTF-8">
+<object th:include="fragments :: common_header" th:remove="tag"></object>
+<title th:text="${title}"></title>
+	<style type="text/css">
+		body {
+			background-color: #f2f2f2;
+			font-size: 14px;
+			line-height: 1.42857;
+		}
+	</style>
+	<script type="text/javascript">
+		function loginFocus() {
+			document.getElementById("amcgebruikersnaam").focus();
+		}
+	</script>
+</head>
+<div th:replace="fragments.html :: pageheader(${title})"></div>
+<body onload="loginFocus()">
+	<div class="container">
+		<br><br><br>
+		<div class="row">
+			<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+				<h2 th:text="${title}"></h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="alert alert-info">
+					Slechts een beperkt aantal gebruikers kan op deze web site inloggen.
+				</div>
+				<form method="post" class="form-horizontal" th:action="@{/login}">
+					<div class="form-group">
+						<label class="col-md-4 control-label">AMC-gebruikersnaam</label>
+						<div class="col-md-8">
+							<input type="text" class="form-control" id="amcgebruikersnaam"
+								name="username" placeholder="amc-gebruikersnaam" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputPassword" class="col-sm-4 control-label">Wachtwoord</label>
+						<div class="col-sm-8">
+							<input type="password" class="form-control" id="wachtwoord"
+								name="password" placeholder="wachtwoord" />
+						</div>
+					</div>
+					<div th:if="${param.error}" class="alert alert-danger">Foute gebruikersnaam en/of wachtwoord</div>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

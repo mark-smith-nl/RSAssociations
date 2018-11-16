@@ -17,6 +17,9 @@
 
 	var columns = [
         { name: 'name' },
+        { name: 'initials' },
+        { name: 'firstName' },
+        { name: 'gender' },
         { name: 'phone' },
         { name: 'email' },
         { name: 'emailExtra' }
@@ -62,6 +65,14 @@
 		}
 	}
 </script>
+<style>
+td {
+	max-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+</style>
 </head>
 <div th:replace="fragments.html :: pageheader(${title})"></div>
 <div class="container-fluid" id="top">
@@ -86,17 +97,23 @@
 				<thead>
 					<tr>
 						<th>Name</th>
-						<th>Telefoon</th>
+						<th>Initials</th>
+						<th>Firstname</th>
+						<th>S</th>
+						<th>Phone</th>
 						<th>Email</th>
 						<th>Email (extra)</th>
 						<th th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"></th>
 					</tr>
 				</thead>
 				<tr th:each="rsEmployee: ${rsEmployees}" th:object="${rsEmployee}">
-					<td th:text="*{fullName}" />
+					<td th:text="*{voorkeurnaam}" />
+					<td th:text="*{voorletters}" />
+					<td th:text="*{#strings.setJoin(firstNames,', ')}" />
+					<td th:text="*{geslacht}" />
 					<td><a th:text="*{phoneNumber}" th:href="|tel:*{phoneNumber}|"></a></td>
+					<td><a th:text="*{amcemail}" th:href="|mailto:*{amcemail}|"></a></td>
 					<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
-					<td><a th:text="*{secondaryEmail}" th:href="|mailto:*{secondaryEmail}|"></a></td>
 					<td style="width: 10px;" th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"
 						th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : '-'}" th:title="${rsFunction.description}" />
 				</tr>

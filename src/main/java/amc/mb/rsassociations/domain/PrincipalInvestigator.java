@@ -3,7 +3,7 @@ package amc.mb.rsassociations.domain;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class PrincipalInvestigator extends ExcelRow {
+public class PrincipalInvestigator extends ImportRow {
 
 	private Long principalInvestigatorId;
 

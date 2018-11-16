@@ -1,10 +1,10 @@
 package amc.mb.rsassociations.domain;
 
-public abstract class ExcelRow {
+public abstract class ImportRow {
 
 	protected final Long rowNumber;
 
-	public ExcelRow(Long rowNumber) {
+	public ImportRow(Long rowNumber) {
 		this.rowNumber = rowNumber;
 	}
 

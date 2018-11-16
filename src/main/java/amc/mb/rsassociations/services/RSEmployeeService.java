@@ -1,11 +1,9 @@
 package amc.mb.rsassociations.services;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class RSEmployeeService {
 	public void saveRSEmployee(@NotNull @Valid RSEmployee rsEmployee) {
 		rsEmployeeMapper.insertRSEmployee(rsEmployee);
 		rsEmployee.getRsFunctions().forEach(rsFunction -> {
-			rsEmployeeMapper.insertRSFunctionForEmployee(rsFunction.getTableName(), rsEmployee.getRsEmployeeId());
+			rsEmployeeMapper.insertRSFunctionForEmployee(rsFunction.getTableName(), rsEmployee.getPersoonId());
 		});
 	}
 
@@ -43,20 +41,12 @@ public class RSEmployeeService {
 		return rsEmployeeMapper.getAllRSEmployees(RSFunction.getFunctionEmployeeLinks(), withRoles);
 	}
 
-	public RSEmployee getRSEmployeeById(@NotNull Long rsEmployeeId) {
-		return rsEmployeeMapper.getRSEmployeeById(RSFunction.getFunctionEmployeeLinks(), rsEmployeeId);
-	}
-
-	public RSEmployee getRSEmployeeByFullName(@NotNull @NotEmpty String fullName) {
-		return rsEmployeeMapper.getRSEmployeeByFullName(RSFunction.getFunctionEmployeeLinks(), fullName);
+	public RSEmployee getRSEmployeeByPersoonId(@NotNull Long persoonId) {
+		return rsEmployeeMapper.getRSEmployeeByPersoonId(RSFunction.getFunctionEmployeeLinks(), persoonId);
 	}
 
 	public Set<RSEmployee> getRSEmployeesWithRole(@NotNull RSFunction rsFunction) {
 		return rsEmployeeMapper.getRSEmployeesWithRole(RSFunction.getFunctionEmployeeLinks(), rsFunction);
-	}
-
-	public List<Map<String, Object>> getRSEmployeeIdsAndFullNameWithRole(@NotNull RSFunction rsFunction) {
-		return rsEmployeeMapper.getRSEmployeeIdsAndFullNameWithRole(rsFunction.getTableName());
 	}
 
 	public void saveRSFunctionCouples(@NotNull @Valid Set<RSEmployeeCouple> rsFunctionCouples) {

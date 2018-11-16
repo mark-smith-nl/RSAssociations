@@ -1,13 +1,10 @@
 package amc.mb.rsassociations.persistence;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import org.apache.ibatis.annotations.Param;
 
 import amc.mb.rsassociations.domain.RSEmployee;
 import amc.mb.rsassociations.domain.RSEmployeeCouple;
@@ -17,19 +14,15 @@ public interface RSEmployeeMapper {
 
 	void insertRSEmployee(@NotNull RSEmployee rsEmployee);
 
-	void insertRSFunctionForEmployee(String tableName, Long rsEmployeeId);
+	void insertRSFunctionForEmployee(String tableName, Long persoonId);
 
 	void insertRSEmployeeCouple(@NotNull @Valid RSEmployeeCouple rsFunctionCouple);
 
 	List<RSEmployee> getAllRSEmployees(String functionEmployeeLinks, boolean withRoles);
 
-	RSEmployee getRSEmployeeById(String functionEmployeeLinks, @NotNull Long rsEmployeeId);
-
-	RSEmployee getRSEmployeeByFullName(String functionEmployeeLinks, @NotNull String fullName);
+	RSEmployee getRSEmployeeByPersoonId(String functionEmployeeLinks, @NotNull Long persoonId);
 
 	Set<RSEmployee> getRSEmployeesWithRole(String functionEmployeeLinks, @NotNull RSFunction rsFunction);
-
-	List<Map<String, Object>> getRSEmployeeIdsAndFullNameWithRole(@Param("functionTable") String functionTable);
 
 	/* List<RSEmployeeCouple> getRSEmployeeCouples(String tableName); */
 

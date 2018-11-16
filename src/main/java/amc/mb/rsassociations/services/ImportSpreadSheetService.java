@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.constraints.NotEmpty;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import amc.mb.rsassociations.domain.Department;
 import amc.mb.rsassociations.domain.Division;
+import amc.mb.rsassociations.domain.IdsPerson;
 import amc.mb.rsassociations.domain.PrincipalInvestigator;
 import amc.mb.rsassociations.domain.RSEmployee;
 import amc.mb.rsassociations.domain.RSEmployeeCouple;
@@ -49,11 +51,14 @@ public class ImportSpreadSheetService {
 
 	private final PrincipalInvestigatorService principalInvestigatorService;
 
+	private final AbstractIdsService idsService;
+
 	public ImportSpreadSheetService(RSEmployeeService rsEmployeeService, OrganisationalUnitService organisationalUnitService,
-			PrincipalInvestigatorService principalInvestigatorService) {
+			PrincipalInvestigatorService principalInvestigatorService, AbstractIdsService idsService) {
 		this.rsEmployeeService = rsEmployeeService;
 		this.organisationalUnitService = organisationalUnitService;
 		this.principalInvestigatorService = principalInvestigatorService;
+		this.idsService = idsService;
 	}
 
 	public void importDataFromFile(@NotNull @NotEmpty String fileName) {
@@ -71,7 +76,7 @@ public class ImportSpreadSheetService {
 		getAndSaveRsEmployees(workbook);
 		getAndSaveProjectControllerAdministrateurCouples(workbook);
 		getAndSaveHRAdviseurMedewerkerCouples(workbook);
-		getAndSaveOrganisationalUnits(workbook);
+		// getAndSaveOrganisationalUnits(workbook);
 		getAndSavePrincipalInvestigators(workbook);
 	}
 
@@ -81,13 +86,18 @@ public class ImportSpreadSheetService {
 
 		Set<RSEmployee> rsEmployees = new LinkedHashSet<>();
 		rows.forEach(row -> {
-			RSEmployee rsEmployee = new RSEmployee(Long.valueOf(row.get("rowNumber")), row.get("Naam"));
-			String rsFunctions = row.get("Functie");
-			Arrays.asList(rsFunctions.split(";")).forEach(rsFunction -> rsEmployee.addRsFunction(RSFunction.getFunctionForValue(rsFunction.trim())));
-			rsEmployee.setPhoneNumber(row.get("Tel. nummer"));
-			rsEmployee.setEmail(row.get("E-mail"));
-			rsEmployee.setSecondaryEmail(row.get("E-mail 2"));
-			rsEmployees.add(rsEmployee);
+			Long persoonId = Long.valueOf(row.get("persoonId"));
+			Optional<IdsPerson> idsPerson = idsService.getIdsPersonByPersoonId(persoonId);
+			if (idsPerson.isPresent()) {
+				RSEmployee rsEmployee = new RSEmployee(Long.valueOf(row.get("rowNumber")), idsPerson.get());
+				String rsFunctions = row.get("Functie");
+				Arrays.asList(rsFunctions.split(";")).forEach(rsFunction -> rsEmployee.addRsFunction(RSFunction.getFunctionForValue(rsFunction.trim())));
+				rsEmployee.setPhoneNumber(row.get("Tel. nummer"));
+				rsEmployee.setEmail(row.get("E-mail 2"));
+				rsEmployees.add(rsEmployee);
+			} else {
+				LOGGER.warn(String.format("No Ids entry found with persoonId %s.", persoonId));
+			}
 		});
 
 		rsEmployeeService.saveRSEmployees(rsEmployees);
@@ -98,8 +108,8 @@ public class ImportSpreadSheetService {
 
 		Set<RSEmployeeCouple> rsFunctionCouples = new LinkedHashSet<>();
 		rows.forEach(row -> {
-			RSEmployee controller = rsEmployeeService.getRSEmployeeByFullName(row.get("PC"));
-			RSEmployee administrateur = rsEmployeeService.getRSEmployeeByFullName(row.get("PA"));
+			RSEmployee controller = rsEmployeeService.getRSEmployeeByPersoonId(Long.valueOf(row.get("persoonId")));
+			RSEmployee administrateur = rsEmployeeService.getRSEmployeeByPersoonId(Long.valueOf(row.get("persoonId_2")));
 			rsFunctionCouples.add(new RSEmployeeCouple(Long.valueOf(row.get("rowNumber")), RSFunctionCouple.PROJECTCONTROLLER_ADMINISTRATEUR_COUPLE, controller, administrateur));
 		});
 
@@ -111,8 +121,8 @@ public class ImportSpreadSheetService {
 
 		Set<RSEmployeeCouple> rsFunctionCouples = new LinkedHashSet<>();
 		rows.forEach(row -> {
-			RSEmployee adviseur = rsEmployeeService.getRSEmployeeByFullName(row.get("HRA"));
-			RSEmployee medewerker = rsEmployeeService.getRSEmployeeByFullName(row.get("HRM"));
+			RSEmployee adviseur = rsEmployeeService.getRSEmployeeByPersoonId(Long.valueOf(row.get("persoonId")));
+			RSEmployee medewerker = rsEmployeeService.getRSEmployeeByPersoonId(Long.valueOf(row.get("persoonId_2")));
 			rsFunctionCouples.add(new RSEmployeeCouple(Long.valueOf(row.get("rowNumber")), RSFunctionCouple.HRADVISEUR_MEDEWERKER_COUPLE, adviseur, medewerker));
 		});
 

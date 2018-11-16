@@ -7,7 +7,9 @@
 		</encoder>
 	</appender>
 	
-	<logger name="amc.mb" level="debug" additivity="false">
+	<logger name="amc.mb" level="info" additivity="false">
 		<appender-ref ref="CONSOLE" />
 	</logger>
+	
+	<logger name="amc.mb.rsassociations.persistence.persistence" level="trace" />
  </configuration>

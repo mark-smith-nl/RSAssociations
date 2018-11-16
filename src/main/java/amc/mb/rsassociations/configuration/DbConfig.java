@@ -1,13 +1,16 @@
 package amc.mb.rsassociations.configuration;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import javax.sql.DataSource;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+
+import amc.mb.rsassociations.enums.PredefinedDataSource;
 
 @Configuration
 @MapperScan(basePackages = { "amc.mb.rsassociations.persistence" })
@@ -15,25 +18,22 @@ public class DbConfig {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(DbConfig.class);
 
+	@Profile("dev")
 	@Bean()
-	public static DataSource dataSource(@Value("${spring.datasource.url}") String url, @Value("${spring.datasource.username}") String username,
-			@Value("${spring.datasource.password}") String password, @Value("${spring.datasource.driver-class-name}") String driverClassName) {
-		DataSource dataSource = new DataSource();
-		dataSource.setDriverClassName(driverClassName);
+	public static DataSource devDataSource() {
+		return PredefinedDataSource.POSTGRES_DATASOURCE.getDataSource();
+	}
 
-		dataSource.setUrl(url);
-		dataSource.setUsername(username);
-		dataSource.setPassword(password);
+	@Profile("test")
+	@Bean()
+	public static DataSource testDataSource() {
+		return PredefinedDataSource.POSTGRES_DATASOURCE.getDataSource();
+	}
 
-		try {
-			dataSource.getConnection();
-		} catch (Exception e) {
-			throw new IllegalStateException(String.format("Could not connect to database [%s].\nIs the dbserver active?", url));
-		}
-
-		LOGGER.info("Connected to database {}", url);
-
-		return dataSource;
+	@Profile({ "dev-local", "acceptatie", "productie" })
+	@Bean()
+	public static DataSource dataSource() {
+		return PredefinedDataSource.POSTGRES_DATASOURCE.getDataSource();
 	}
 
 	@Bean()

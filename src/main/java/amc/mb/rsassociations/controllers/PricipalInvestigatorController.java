@@ -2,6 +2,7 @@ package amc.mb.rsassociations.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class PricipalInvestigatorController {
 	}
 
 	@GetMapping
-	public String getPricipalInvestigators(@RequestParam(required = false, value = "undefined") String menuItem, ModelMap map) {
+	public String getPricipalInvestigators(Authentication authentication, @RequestParam(required = false, value = "undefined") String menuItem, ModelMap map) {
 		map.addAttribute("principalInvestigators", principalInvestigatorService.getAllPrincipalInvestigators());
 		map.addAttribute("menuItem", menuItem);
 

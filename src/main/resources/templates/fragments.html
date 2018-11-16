@@ -49,10 +49,11 @@
 		<div class="navbar-text">
 			<div th:text="${title}" style="padding-right: 40px;">title</div>
 		</div>
-		<div class="navbar-text" th:with="ingelogdAls=${#authorization == null ? null : #authorization.expression('isAuthenticated()') ? #authentication.principal.username : null}">
-			<a href="http://intranet.amc.nl/web/organisatie/domeinen/research.htm" target="_blank">Research Office</a> / <a
-				href="http://intranet.amc.nl/web/personeel/links-voor-de-werkplek/amc-literatuur.htm" target="_blank">Research Support</a> <br /> <span
-				th:if="${ingelogdAls != null && ingelogdAls != 'anonymoususer'}" th:text="${'Ingelogd als ' + ingelogdAls}">Ingelogd</span>
+		<div class="navbar-text" sec:authorize="isAuthenticated()">
+			User: <span sec:authentication="name"></span><span> <a th:href="@{logout}">Logout</a></span>
+		</div>
+		<div class="navbar-text" sec:authorize="!isAuthenticated()">
+			<a th:href="@{login}">Login</a>
 		</div>
 	</nav>
 

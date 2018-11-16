@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import amc.mb.rsassociations.enums.RSFunction;
 import amc.mb.rsassociations.enums.RSFunctionCouple;
 
-public class RSEmployeeCouple extends ExcelRow {
+public class RSEmployeeCouple extends ImportRow {
 
 	private final RSFunctionCouple rsFunctionCouple;
 

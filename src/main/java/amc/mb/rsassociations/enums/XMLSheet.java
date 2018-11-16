@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 public enum XMLSheet {
 	OVERVIEW_ORGANISATIONAL_UNITS("Overview", "Achternaam", "Divisie", "Afdeling", "Unit"),
 	OVERVIEW_PI("Overview", "Titel", "Voorletters", "Achternaam", "m/v", "Kamernr.", "e-mail", "Functie", "Telefoon", "Postadres"),
-	CONTACT_GEGEVENS("Contactgegevens RS+ medewerkers", "Naam", "Functie", "Tel. nummer", "E-mail", "E-mail 2"),
-	MAPPING_PC_PA("Mapping PC-PA", "PC", "PA"),
-	MAPPING_HRA_HRM("Mapping HRA-HRM", "HRA", "HRM");
+	CONTACT_GEGEVENS("Contactgegevens RS+ medewerkers", "persoonId", "Functie", "Tel. nummer", "E-mail 2"),
+	MAPPING_PC_PA("Mapping PC-PA", "persoonId", "persoonId_2"),
+	MAPPING_HRA_HRM("Mapping HRA-HRM", "persoonId", "persoonId_2");
 
 	private final String sheetName;
 

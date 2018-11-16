@@ -8,52 +8,33 @@ import javax.validation.constraints.NotNull;
 
 import amc.mb.rsassociations.enums.RSFunction;
 
-public class RSEmployee extends ExcelRow {
-
-	private Long rsEmployeeId;
-
-	@NotNull
-	@NotEmpty
-	private String fullName;
+public class RSEmployee extends IdsPerson {
 
 	@NotNull
 	@NotEmpty
 	private String phoneNumber;
 
-	@NotNull
-	@NotEmpty
 	private String email;
-
-	private String secondaryEmail;
 
 	private Set<RSFunction> rsFunctions = new HashSet<>();
 
-	/** Constructor used by constructing an instance from a spreadsheet row. */
-	public RSEmployee(@NotNull Long rowNumber, String fullName) {
-		super(rowNumber);
-		this.fullName = fullName;
+	/** Constructor used by constructing an instance from a spreadsheet row and its correponding Ids entry. */
+	public RSEmployee(@NotNull Long rowNumber, IdsPerson idsPerson) {
+		this(idsPerson.getPersoonId(), rowNumber);
+		this.setAmcgebruikersnaam(idsPerson.getAmcgebruikersnaam());
+		this.setAmcemail(idsPerson.getAmcemail());
+		this.setGeboortedatum(idsPerson.getGeboortedatum());
+		this.setGeslacht(idsPerson.getGeslacht());
+		this.setRoepnaam(idsPerson.getRoepnaam());
+		this.setTussenvoegsel(idsPerson.getTussenvoegsel());
+		this.setVoorkeurnaam(idsPerson.getVoorkeurnaam());
+		this.setVoorletters(idsPerson.getVoorletters());
+		this.setVoornaam(idsPerson.getVoornaam());
 	}
 
 	/** Constructor used by constructing an instance from a database record. */
-	public RSEmployee(Long rsEmployeeId, Long rowNumber, String fullName) {
-		this(rowNumber, fullName);
-		this.rsEmployeeId = rsEmployeeId;
-	}
-
-	public Long getRsEmployeeId() {
-		return rsEmployeeId;
-	}
-
-	public void setRsEmployeeId(Long rsEmployeeId) {
-		this.rsEmployeeId = rsEmployeeId;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public void setFullName(String name) {
-		this.fullName = name;
+	public RSEmployee(Long persoonId, Long rowNumber) {
+		super(persoonId, rowNumber);
 	}
 
 	public String getPhoneNumber() {
@@ -72,14 +53,6 @@ public class RSEmployee extends ExcelRow {
 		this.email = email;
 	}
 
-	public String getSecondaryEmail() {
-		return secondaryEmail;
-	}
-
-	public void setSecondaryEmail(String secondaryEmail) {
-		this.secondaryEmail = secondaryEmail;
-	}
-
 	public Set<RSFunction> getRsFunctions() {
 		return rsFunctions;
 	}
@@ -90,12 +63,6 @@ public class RSEmployee extends ExcelRow {
 
 	public void addRsFunction(RSFunction rsFunction) {
 		rsFunctions.add(rsFunction);
-	}
-
-	@Override
-	public String toString() {
-		return "RSEmployee [rsEmployeeId=" + rsEmployeeId + ", fullName=" + fullName + ", phoneNumber=" + phoneNumber + ", email=" + email + ", secondaryEmail=" + secondaryEmail
-				+ ", rsFunctions=" + rsFunctions + "]";
 	}
 
 }

@@ -79,7 +79,7 @@ public enum RSFunction implements WebEnum {
 			.append("SELECT '")
 			.append(rsFunction.name())
 			.append("' function_name")
-			.append(", rs_employee_id ")
+			.append(", persoon_id ")
 			.append("FROM rsassociations.")
 			.append(rsFunction.tableName);
 			//@formatter:on
