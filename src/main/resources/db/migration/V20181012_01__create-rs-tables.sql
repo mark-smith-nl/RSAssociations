@@ -38,8 +38,8 @@ CREATE TABLE function_consortium_controller(persoon_id integer NOT NULL REFERENC
 
 CREATE TABLE project_controller_administrator_link(
 	controller_id integer     NOT NULL REFERENCES function_project_controller(persoon_id)   ON DELETE CASCADE
-	, administrator integer NOT NULL REFERENCES function_project_administrateur(persoon_id) ON DELETE CASCADE
-	, UNIQUE (controller_id, administrator)
+	, administrator_id integer NOT NULL REFERENCES function_project_administrateur(persoon_id) ON DELETE CASCADE
+	, UNIQUE (controller_id, administrator_id)
 ) INHERITS(created, rownumber);
 
 CREATE TABLE hr_advisor_employee_link(

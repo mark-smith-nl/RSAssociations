@@ -17,7 +17,7 @@ public class RsAssociationsApplication {
 
 		ImportSpreadSheetService importSpreadSheetService = context.getBean(ImportSpreadSheetService.class);
 
-		// importSpreadSheetService.importDataFromFile("/home/mark/Bureaublad/rsAssociations/rsAssociations.xlsx");
+		importSpreadSheetService.importDataFromFile("/home/mark/Bureaublad/rsAssociations/rsAssociations.xlsx");
 
 		// RSEmployeeService rsEmployeeService = context.getBean(RSEmployeeService.class);
 

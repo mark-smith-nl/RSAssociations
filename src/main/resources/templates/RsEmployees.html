@@ -36,13 +36,13 @@
 	    	pageLength: 12,
 	        processing: true,
 	        language: { 
-	        	search:         "Doorzoek alle kolommen:",
-	        	info:           "Toon _START_ tot _END_ van _TOTAL_ (gefilterde) " + [[${title}]] + " (Pag. _PAGE_ van _PAGES_)",
-	        	infoEmpty:      "Geen " + [[${title}]],
-	        	emptyTable:     "Geen " + [[${title}]],
-	        	zeroRecords:    "Geen " + [[${title}]],
-	        	infoFiltered:   " - Totaal aantal [${title}]: _MAX_",
-	        	paginate: {first: "Eerste", last: "Laatste", next: "Volgende", previous: "Vorige"}
+	        	search:         "Search all columns:",
+	        	info:           "Show _START_ to _END_ from _TOTAL_ (filtered) " + [[${title}]] + " (Page _PAGE_ from _PAGES_)",
+	        	infoEmpty:      "No " + [[${title}]],
+	        	emptyTable:     "No " + [[${title}]],
+	        	zeroRecords:    "No " + [[${title}]],
+	        	infoFiltered:   " - Total number " + [[${title}]] + ": _MAX_",
+	        	paginate: {first: "First", last: "Last", next: "Next", previous: "Previous"}
 	        },  
 		    order: [0, "asc"],
 		    columns: columns
@@ -88,7 +88,7 @@ td {
 				</div>
 				<div class="col-sm-4">
 					<select class="form-control" id="rsFunction" name="rsFunction" onChange='filterByRsFunction(this)'>
-						<option selected="selected" value="">-- Functie --</option>
+						<option selected="selected" value="">-- Function --</option>
 						<option th:each="rsFunction : ${T(amc.mb.rsassociations.enums.RSFunction).values()}" th:value="${rsFunction.name()}" th:text="${rsFunction.description}"></option>
 					</select>
 				</div>

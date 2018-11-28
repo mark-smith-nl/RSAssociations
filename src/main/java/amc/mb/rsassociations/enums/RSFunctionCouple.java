@@ -6,7 +6,7 @@ public enum RSFunctionCouple implements WebEnum {
 			"project_controller_administrator_link",
 			"Projectcontroller - administrateur",
 			"controller_id",
-			"administrator",
+			"administrator_id",
 			RSFunction.PROJECTCONTROLLER,
 			RSFunction.PROJECTADMINISTRATEUR),
 	HRADVISEUR_MEDEWERKER_COUPLE("hr_advisor_employee_link", "HRadministrateur - medewerker", "advisor_id", "employee_id", RSFunction.HR_ADVISEUR, RSFunction.HR_MEDEWERKER);

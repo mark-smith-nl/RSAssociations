@@ -41,18 +41,12 @@
 	}
 	
 </script>
-<style type="text/css">
-table.dataTable thead, table.dataTable tfoot {
-	vertical-align: top;
-}
-
-table.dataTable tbody tr td span {
-	/* om ellipsis te gebruiken bij langere velden. Dan ook span element en "filter_type: 'html'" */
-	display: block;
+<style>
+td {
+	max-width: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	white-space: nowrap; //
-	width: 220px; /* width in span zetten zodat het variabel is */
+	white-space: nowrap;
 }
 </style>
 </head>
