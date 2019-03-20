@@ -7,10 +7,12 @@ import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.annotation.Validated;
 
 import amc.mb.rsassociations.domain.IdsPerson;
 import amc.mb.rsassociations.persistence.IdsPersonMapper;
 
+@Validated
 public class AbstractIdsService {
 
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());

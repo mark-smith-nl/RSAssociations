@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:with="title='Research Support medewerkers'">
+<html xmlns:th="http://www.thymeleaf.org" th:with="title='Research Support employees'">
 <head>
+<link id="test" rel="icon" href=""  sizes="16x16">
+
 <meta charset="UTF-8">
 <object th:include="fragments :: common_header" th:remove="tag"></object>
 <title th:text="${title}"></title>
@@ -13,19 +15,20 @@
 <script type="text/javascript" th:inline="javascript">
 	var oTable;
 	
-	var columns = new Array();
-
-	var columns = [
-        { name: 'name' },
-        { name: 'initials' },
-        { name: 'firstName' },
-        { name: 'gender' },
-        { name: 'phone' },
-        { name: 'email' },
-        { name: 'emailExtra' }
+	var columnDefs = [
+        { targets: 0, visible: true, name: 'name'      , title: 'Name' },
+        { targets: 1, visible: true, name: 'initials'  , title: 'Initials'},
+        { targets: 2, visible: false, name: 'firstName' , title: 'Firstname'},
+        { targets: 3, visible: true, name: 'gender'    , title: 'S'},
+        { targets: 4, visible: true, name: 'phone'     , title: 'Phone'},
+        { targets: 5, visible: true, name: 'email'     , title: 'Email'},
+        { targets: 6, visible: true, name: 'emailExtra', title: 'Email (extra)'}
     ];
 	
-	[[${T(amc.mb.rsassociations.enums.RSFunction).values()}]].forEach(function(rsFunction) {columns.push({name: rsFunction})});
+	var offset = columnDefs.length;
+	
+	[[${T(amc.mb.rsassociations.enums.RSFunction).values()}]].forEach(function(rsFunction, index) {
+		columnDefs.push({targets: index + offset, visible: true, name: rsFunction, title: ''})});
 	
 	function initDataTable() {
 		rsEmployees = $('#rsEmployees').DataTable({
@@ -43,9 +46,19 @@
 	        	zeroRecords:    "No " + [[${title}]],
 	        	infoFiltered:   " - Total number " + [[${title}]] + ": _MAX_",
 	        	paginate: {first: "First", last: "Last", next: "Next", previous: "Previous"}
-	        },  
+	        },
+	        dom: 'Bfrtip',
+	        buttons: ['excel', 'pdf', 'print', {
+	        	text: '<u>R</u>eset ordering - search',
+	        	key: {key: 'r', altKey: true},
+                action: function (e, dt, node, config) {resetOrderingTable()}
+            }, {
+	        	text: '<u>T</u>est',
+	        	key: {key: 't', altKey: true},
+                action: function (e, dt, node, config) {rsEmployees.column('emailExtra:name').search('@').draw()}
+            }],
 		    order: [0, "asc"],
-		    columns: columns
+		    columnDefs: columnDefs
 	    });
 	}
 	
@@ -57,6 +70,7 @@
 	}
 	
 	function filterByRsFunction(source) {
+		$("#test").attr("href", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Red_Dot.svg/150px-Red_Dot.svg.png")
 		var columnName = $(source).val();
 		
 		rsEmployees.columns().search("").draw();
@@ -84,7 +98,6 @@ td {
 		<div class="col-sm-10">
 			<div class="row">
 				<div class="col-sm-8">
-					<button onclick="resetOrderingTable()">Reset ordering - filtering</button>
 				</div>
 				<div class="col-sm-4">
 					<select class="form-control" id="rsFunction" name="rsFunction" onChange='filterByRsFunction(this)'>
@@ -96,13 +109,13 @@ td {
 			<table class="table table-striped overview" id="rsEmployees">
 				<thead>
 					<tr>
-						<th>Name</th>
-						<th>Initials</th>
-						<th>Firstname</th>
-						<th>S</th>
-						<th>Phone</th>
-						<th>Email</th>
-						<th>Email (extra)</th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
 						<th th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"></th>
 					</tr>
 				</thead>
@@ -115,7 +128,7 @@ td {
 					<td><a th:text="*{amcemail}" th:href="|mailto:*{amcemail}|"></a></td>
 					<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
 					<td style="width: 10px;" th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"
-						th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : '-'}" th:title="${rsFunction.description}" />
+						th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : ''}" th:title="${rsFunction.description}" />
 				</tr>
 			</table>
 
