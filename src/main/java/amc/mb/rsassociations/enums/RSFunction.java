@@ -7,16 +7,16 @@ import java.util.List;
 import amc.mb.rsassociations.services.ImportSpreadSheetService;
 
 public enum RSFunction implements WebEnum {
-	PROJECTCONTROLLER("function_project_controller", "1. Projectcontroller", "Projectcontroller"),
-	PROJECTADMINISTRATEUR("function_project_administrateur", "2. Projectadministrateur", "Projectadministrateur"),
-	JURIST_MTA_CDA("function_jurist_mta_cda", "3. MTA & CDA Jurist", "MTA & CDA Jurist"),
-	JURIST_IP_EU("function_jurist_ip_eu", "4. IP & EU Jurist", "IP & EU Jurist"),
-	JURIST_KLINISCH("function_jurist_klinisch", "5. Klinisch Jurist", "Klinisch Jurist", "Klinische Jurist"),
-	HR_ADVISEUR("function_hr_adviseur", "6. HR Adviseur", "HR Adviseur", "HR Adviseur "),
-	HR_MEDEWERKER("function_hr_medewerker", "7. HR Medewerker", "HR Medewerker", "HR medewerker"),
-	BUSINESS_DEVELOPER("function_business_developer", "8. Business Developer", "Business Developer", null),
-	OCTROOIGEMACHTIGDE("function_octrooi_gemachtigde", "9. Octrooigemachtigde", "Octrooigemachtigde", null),
-	CONSORTIUMCONTROLLER("function_consortium_controller", "10. Consortium controller", "Consortium controller", null);
+	PROJECTCONTROLLER("function_project_controller", "Projectcontroller", "Projectcontroller"),
+	PROJECTADMINISTRATEUR("function_project_administrateur", "Projectadministrateur", "Projectadministrateur"),
+	JURIST_MTA_CDA("function_jurist_mta_cda", "MTA & CDA Jurist", "MTA & CDA Jurist"),
+	JURIST_IP_EU("function_jurist_ip_eu", "IP & EU Jurist", "IP & EU Jurist"),
+	JURIST_KLINISCH("function_jurist_klinisch", "Klinisch Jurist", "Klinisch Jurist", "Klinische Jurist"),
+	HR_ADVISEUR("function_hr_adviseur", "HR Adviseur", "HR Adviseur", "HR Adviseur "),
+	HR_MEDEWERKER("function_hr_medewerker", "HR Medewerker", "HR Medewerker", "HR medewerker"),
+	BUSINESS_DEVELOPER("function_business_developer", "Business Developer", "Business Developer", null),
+	OCTROOIGEMACHTIGDE("function_octrooi_gemachtigde", "Octrooigemachtigde", "Octrooigemachtigde", null),
+	CONSORTIUMCONTROLLER("function_consortium_controller", "Consortium controller", "Consortium controller", null);
 
 	private final String tableName;
 

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import amc.mb.rsassociations.enums.RSFunction;
+
 @Service
 @Validated
 public class TestService {
@@ -35,4 +37,7 @@ public class TestService {
 		System.out.println(name + "---->" + arg);
 	}
 
+	public static void main(String[] args) {
+		System.out.println(RSFunction.BUSINESS_DEVELOPER.ordinal());
+	}
 }

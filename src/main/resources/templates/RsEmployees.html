@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:with="title='Research Support employees'">
 <head>
-<link id="test" rel="icon" href=""  sizes="16x16">
+<link rel="icon" href="http://example.com/favicon.png">
+
 
 <meta charset="UTF-8">
 <object th:include="fragments :: common_header" th:remove="tag"></object>
@@ -70,12 +71,12 @@
 	}
 	
 	function filterByRsFunction(source) {
-		$("#test").attr("href", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Red_Dot.svg/150px-Red_Dot.svg.png")
+		var searchValue = $(source).find(":selected").attr('index');
 		var columnName = $(source).val();
 		
 		rsEmployees.columns().search("").draw();
 		if (columnName != "") {
-			rsEmployees.column(columnName + ':name' ).search('+').draw();
+			rsEmployees.column(columnName + ':name' ).search(searchValue).draw();
 		}
 	}
 </script>
@@ -102,7 +103,9 @@ td {
 				<div class="col-sm-4">
 					<select class="form-control" id="rsFunction" name="rsFunction" onChange='filterByRsFunction(this)'>
 						<option selected="selected" value="">-- Function --</option>
-						<option th:each="rsFunction : ${T(amc.mb.rsassociations.enums.RSFunction).values()}" th:value="${rsFunction.name()}" th:text="${rsFunction.description}"></option>
+						<option th:each="rsFunction : ${T(amc.mb.rsassociations.enums.RSFunction).values()}" 
+						th:value="${rsFunction.name()}" th:text="|${rsFunction.ordinal()}. ${rsFunction.description}|"
+						th:attr="index=${rsFunction.ordinal()}"></option>
 					</select>
 				</div>
 			</div>
@@ -128,10 +131,9 @@ td {
 					<td><a th:text="*{amcemail}" th:href="|mailto:*{amcemail}|"></a></td>
 					<td><a th:text="*{email}" th:href="|mailto:*{email}|"></a></td>
 					<td style="width: 10px;" th:each="rsFunction: ${T(amc.mb.rsassociations.enums.RSFunction).values()}"
-						th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? '+' : ''}" th:title="${rsFunction.description}" />
+						th:text="${#lists.contains(rsEmployee.rsFunctions, rsFunction) ? rsFunction.ordinal() : ''}" th:title="${rsFunction.description}" />
 				</tr>
 			</table>
-
 		</div>
 	</div>
 
